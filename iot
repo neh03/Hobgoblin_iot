@@ -1,0 +1,122 @@
+~~~~~~~~~7~~~~~~~~~~~~
+#define PH_PIN 34
+
+void setup() {
+  Serial.begin(115200);
+}
+
+void loop() {
+  float v = analogRead(PH_PIN) * (3.3 / 4095.0);
+  float pH = 7.0 + (1.65 - v) * 3.5;
+  Serial.print("pH Value: ");
+  Serial.println(pH);
+  delay(2000);
+}
+
+~~~~~~~~8~~~~~~~~~~
+const int gas_pin = 2;
+
+void setup() {
+  pinMode(gas_pin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  Serial.print("Gas Value: ");
+  Serial.println(analogRead(gas_pin));
+  delay(1500);
+}
+
+~~~~~~~~~~~9~~~~~~~~~~~~
+
+#include <DHT.h>
+
+#define DHTPIN 12
+DHT dht(DHTPIN, DHT11);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  Serial.print("Temperature: ");
+  Serial.print(dht.readTemperature());
+  Serial.println(" C ");
+  Serial.print("Humidity: ");
+  Serial.println(dht.readHumidity());
+  delay(1000);
+}
+
+
+
+~~~~~~~~~~~~10~~~~~~~~~~~~~
+
+
+#include <SoftwareSerial.h>
+
+SoftwareSerial bt(3, 1); // Rx, Tx
+
+void setup() {
+  bt.begin(9600);
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (bt.available()) Serial.write(bt.read());
+  if (Serial.available()) bt.write(Serial.read());
+}
+
+
+
+
+~~~~~~~~~~~~~~~~~11~~~~~~~~~~~~
+
+const int trigPin = 26, echoPin = 25;
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  long duration = pulseIn(echoPin, HIGH);
+  int distance = duration * 0.034 / 2;
+
+  Serial.print("Distance: ");
+  Serial.println(distance);
+  delay(2000);
+}
+
+
+
+~~~~~~~~~~~~~12~~~~~~~~~~~
+
+#include <Keypad.h>
+
+char keys[4][4] = {
+  {'0','1','2','3'},
+  {'4','5','6','7'},
+  {'8','9','A','B'},
+  {'C','D','E','F'}
+};
+byte rowPins[4] = {13, 12, 14, 27};
+byte colPins[4] = {26, 25, 33, 32};
+
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, 4, 4);
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  char key = keypad.getKey();
+  if (key) Serial.println(key);
+}
